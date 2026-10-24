@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tecsycom Gestor de Leads - Perú Fibra & WIN</title>
+    <!-- Favicon / Ícono de la pestaña -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z'/><path d='m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65'/><path d='m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65'/></svg>">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        pf: {
+                            light: '#EEF2FF',
+                            primary: '#4F46E5',
+                            hover: '#4338CA',
+                        },
+                        win: {
+                            light: '#FFF7ED',
+                            primary: '#EA580C',
+                            hover: '#C2410C',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0f4ff 0%, #f7f3ff 50%, #fff0f5 100%);
+            min-height: 100vh;
+        }
+        .custom-glass {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+        }
+        .company-tab-active-pf {
+            background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.35);
+        }
+        .company-tab-active-win {
+            background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(234, 88, 12, 0.35);
+        }
+        /* Force uppercase styling for inputs */
+        .uppercase-input {
+            text-transform: uppercase;
+        }
+        .uppercase-input::placeholder {
+            text-transform: none;
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-800 antialiased pb-12">
+
+    <!-- Header / Navbar -->
+    <header class="custom-glass sticky top-0 z-30 border-b border-slate-200/80 mb-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-indigo-600 text-white rounded-xl shadow-md">
+                    <i data-lucide="layers" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight text-slate-900">Tecsycom Gestor de Leads</h1>
+                    <p class="text-xs text-slate-500 font-medium">Panel de Registro Unificado - PERU FIBRA / WIN</p>
+                </div>
+            </div>
+
+            <!-- Active Company Indicator Badge -->
+            <div class="hidden sm:flex items-center gap-2 bg-emerald-50 border border-emerald-200/80 px-3 py-1.5 rounded-xl">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-semibold text-emerald-800">Sistema Conectado &amp; Listo</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+
+        <!-- Company Switcher Header Banner -->
+        <div class="custom-glass rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-indigo-100 text-indigo-700 rounded-xl">
+                    <i data-lucide="building-2" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h2 class="text-sm font-bold text-slate-800">Selección de Empresa de Destino</h2>
+                    <p class="text-xs text-slate-500">Elija la empresa para dirigir el registro correspondiente</p>
+                </div>
+            </div>
+
+            <!-- Company Tabs -->
+            <div class="w-full md:w-auto flex bg-slate-100 p-1.5 rounded-xl border border-slate-200 gap-1.5">
+                <button type="button" id="tabPF" onclick="selectCompany('PERUFIBRA')" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 company-tab-active-pf">
+                    <i data-lucide="wifi" class="w-4 h-4"></i>
+                    <span>PERU FIBRA</span>
+                    <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded font-mono uppercase">LEADS BASE PF</span>
+                </button>
+                <button type="button" id="tabWIN" onclick="selectCompany('WIN')" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 text-slate-600 hover:text-slate-900">
+                    <i data-lucide="zap" class="w-4 h-4"></i>
+                    <span>WIN</span>
+                    <span class="text-[10px] bg-slate-200 px-1.5 py-0.5 rounded font-mono uppercase text-slate-600">LEADS BASE WIN</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN FORM CARD -->
+        <div class="custom-glass rounded-2xl shadow-xl border border-white/80 overflow-hidden">
+            <!-- Form Header Bar -->
+            <div id="formHeaderBar" class="px-6 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white flex items-center justify-between transition-all duration-300">
+                <div class="flex items-center gap-3">
+                    <i id="companyHeaderIcon" data-lucide="wifi" class="w-6 h-6"></i>
+                    <div>
+                        <h2 class="font-bold text-lg" id="companyHeaderTitle">Formulario de Registro - PERU FIBRA</h2>
+                        <p class="text-xs text-indigo-100" id="companyHeaderSubtitle">Los datos se guardarán automáticamente en la pestaña 'LEADS BASE PF'</p>
+                    </div>
+                </div>
+                <span class="text-xs bg-white/20 font-semibold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm" id="companyHeaderBadge">LEADS BASE PF</span>
+            </div>
+
+            <form id="leadForm" class="p-6 sm:p-8 space-y-6">
+                <!-- Hidden company field -->
+                <input type="hidden" id="empresa" name="empresa" value="PERUFIBRA">
+
+                <!-- Section 1: Información Principal de la Atención -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i data-lucide="user-check" class="w-4 h-4 text-indigo-500"></i>
+                        Datos de Control y Personal
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                        <!-- Fecha Automática de Sistema -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1 flex items-center justify-between">
+                                <span>FECHA Y HORA</span>
+                                <span class="text-[10px] text-emerald-600 font-bold uppercase">(AUTOMÁTICO)</span>
+                            </label>
+                            <div class="relative">
+                                <input type="text" id="fechaDisplay" readonly class="w-full px-3 py-2 text-xs bg-slate-100 border border-slate-200 text-slate-700 font-mono font-bold rounded-lg focus:outline-none cursor-not-allowed">
+                                <i data-lucide="clock" class="w-4 h-4 absolute right-3 top-2.5 text-slate-400"></i>
+                            </div>
+                        </div>
+
+                        <!-- Usuario -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">USUARIO</label>
+                            <input type="text" id="usuario" name="usuario" placeholder="EJ: @moon17_30" required class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+
+                        <!-- Teléfono Móvil -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">TELEF_MOVIL</label>
+                            <input type="text" id="telefMovil" name="telefMovil" placeholder="EJ: 988577982" required class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+
+                        <!-- Agente -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">AGENTE</label>
+                            <input type="text" id="agente" name="agente" placeholder="NOMBRE DEL AGENTE" required class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+
+                        <!-- Asesor (Dropdown + Agregar Nuevo) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1 flex items-center justify-between">
+                                <span>ASESOR</span>
+                                <button type="button" onclick="openNewAdvisorModal()" class="text-[11px] text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-0.5">
+                                    <i data-lucide="plus-circle" class="w-3 h-3"></i> + Nuevo
+                                </button>
+                            </label>
+                            <select id="asesor" name="asesor" required class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                                <option value="" disabled selected>-- SELECCIONE ASESOR --</option>
+                                <!-- Injected via JavaScript -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-200/60">
+
+                <!-- Section 2: Tipificación y Validación -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i data-lucide="check-square" class="w-4 h-4 text-indigo-500"></i>
+                        Tipificación y Validación
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Tipificaciones 1 -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">TIPIFICACIONES 1 (CONCEPTO4)</label>
+                            <select id="tipificaciones1" name="tipificaciones1" required onchange="handleTipificacionChange()" class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                                <option value="" disabled selected>-- SELECCIONE UNA OPCIÓN --</option>
+                                <option value="VENTA">VENTA</option>
+                                <option value="AGENDADO">AGENDADO</option>
+                                <option value="CLIENTE NO PERMITE BRINDAR INFORMACIÓN">CLIENTE NO PERMITE BRINDAR INFORMACIÓN</option>
+                                <option value="NO DESEA-PRECIO">NO DESEA-PRECIO</option>
+                                <option value="NO DESEA-PRODUCTO">NO DESEA-PRODUCTO</option>
+                                <option value="CLIENTE RETENIDO - PRECIO">CLIENTE RETENIDO - PRECIO</option>
+                                <option value="CLIENTE RETENIDO - VELOCIDAD">CLIENTE RETENIDO - VELOCIDAD</option>
+                                <option value="CLIENTE RETENIDO - PROMOCIÓN">CLIENTE RETENIDO - PROMOCIÓN</option>
+                                <option value="CONFORME CON SU OPERADOR">CONFORME CON SU OPERADOR</option>
+                                <option value="CORTA LLAMADA">CORTA LLAMADA</option>
+                                <option value="CLIENTE CON DEUDA">CLIENTE CON DEUDA</option>
+                                <option value="SIN COBERTURA">SIN COBERTURA</option>
+                                <option value="YA CUENTA CON SERVICIO ACTIVO">YA CUENTA CON SERVICIO ACTIVO</option>
+                                <option value="PREVENTA EN PROCESO">PREVENTA EN PROCESO</option>
+                                <option value="CLIENTE DE BAJA">CLIENTE DE BAJA</option>
+                                <option value="NO CONTESTA">NO CONTESTA</option>
+                                <option value="LLAMADA MUDA">LLAMADA MUDA</option>
+                                <option value="CASILLA DE VOZ">CASILLA DE VOZ</option>
+                                <option value="FUERA DE SERVICIO">FUERA DE SERVICIO</option>
+                            </select>
+                        </div>
+
+                        <!-- Tipificaciones 2 (Auto-rellenado) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">
+                                TIPIFICACIONES 2 (CRUCE)
+                                <span class="text-[10px] text-indigo-600 font-normal ml-1">(AUTO-RELLENADO)</span>
+                            </label>
+                            <div class="relative">
+                                <input type="text" id="tipificaciones2" name="tipificaciones2" readonly placeholder="SE AUTOCOMPLETA AUTOMÁTICAMENTE" class="uppercase-input w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 text-slate-700 font-bold rounded-lg focus:outline-none">
+                                <span id="validationBadge" class="hidden absolute right-2.5 top-2 text-[10px] px-2 py-0.5 rounded font-bold"></span>
+                            </div>
+                        </div>
+
+                        <!-- 2da Validación -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">2DA VALIDACION</label>
+                            <select id="segundaValidacion" name="segundaValidacion" class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                                <option value="APROBADO">APROBADO</option>
+                                <option value="OBSERVADO">OBSERVADO</option>
+                                <option value="RECHAZADO">RECHAZADO</option>
+                                <option value="PENDIENTE">PENDIENTE</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-200/60">
+
+                <!-- Section 3: Ubicación y Fuente -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i data-lucide="map-pin" class="w-4 h-4 text-indigo-500"></i>
+                        Ubicación y Fuente
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">FUENTE</label>
+                            <select id="fuente" name="fuente" class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                                <option value="LLAMADA ENTRANTE">LLAMADA ENTRANTE</option>
+                                <option value="LLAMADA SALIENTE">LLAMADA SALIENTE</option>
+                                <option value="WHATSAPP">WHATSAPP</option>
+                                <option value="REDES SOCIALES">REDES SOCIALES</option>
+                                <option value="REFERIDO">REFERIDO</option>
+                                <option value="WEB FORM">WEB FORM</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">DISTRITO</label>
+                            <input type="text" id="distrito" name="distrito" placeholder="EJ: MIRAFLORES, SAN MARTIN DE PORRES" class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">COORDENADAS</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="coordenadas" name="coordenadas" placeholder="-12.04637, -77.04279" class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                                <button type="button" onclick="obtenerCoordenadasGPS()" title="Capturar mi ubicación GPS" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 rounded-lg flex items-center justify-center transition">
+                                    <i data-lucide="crosshair" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">DIRECCION</label>
+                        <input type="text" id="direccion" name="direccion" placeholder="AV. PRINCIPAL #123 / MZ LOTE..." class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                    </div>
+                </div>
+
+                <hr class="border-slate-200/60">
+
+                <!-- Section 4: Registro de Llamadas -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <i data-lucide="phone-call" class="w-4 h-4 text-indigo-500"></i>
+                        Gestión de Llamadas
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">PRIMERA LLAMADA</label>
+                            <select id="primeraLlamada" name="primeraLlamada" class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                                <option value="CONTESTADA">CONTESTADA</option>
+                                <option value="NO CONTESTÓ">NO CONTESTÓ</option>
+                                <option value="OCUPADO">OCUPADO</option>
+                                <option value="APAGADO">APAGADO</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">SEGUNDA LLAMADA</label>
+                            <select id="segundaLlamada" name="segundaLlamada" class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                                <option value="SIN REALIZAR">SIN REALIZAR</option>
+                                <option value="CONTESTADA">CONTESTADA</option>
+                                <option value="NO CONTESTÓ">NO CONTESTÓ</option>
+                                <option value="OCUPADO">OCUPADO</option>
+                                <option value="APAGADO">APAGADO</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">TERCERA LLAMADA</label>
+                            <select id="terceraLlamada" name="terceraLlamada" class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                                <option value="SIN REALIZAR">SIN REALIZAR</option>
+                                <option value="CONTESTADA">CONTESTADA</option>
+                                <option value="NO CONTESTÓ">NO CONTESTÓ</option>
+                                <option value="OCUPADO">OCUPADO</option>
+                                <option value="APAGADO">APAGADO</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section 5: Observaciones -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">OBSERVACION</label>
+                    <textarea id="observacion" name="observacion" rows="3" placeholder="AÑADIR NOTAS, HORARIOS PREFERIDOS O DETALLES ADICIONALES..." class="uppercase-input w-full px-3 py-2 text-xs bg-white/90 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition"></textarea>
+                </div>
+
+                <!-- Form Action Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-slate-200/80">
+                    <button type="button" onclick="resetForm()" class="w-full sm:w-auto px-5 py-2.5 text-slate-600 bg-slate-100 hover:bg-slate-200 font-semibold rounded-xl text-xs transition">
+                        LIMPIAR FORMULARIO
+                    </button>
+                    <button type="submit" id="btnSubmit" class="w-full sm:w-auto px-7 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 transition duration-200">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                        <span>GUARDAR REGISTRO</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- HISTORY / LOCAL SESSION RECORDS -->
+        <div class="custom-glass rounded-2xl p-6 shadow-sm border border-slate-100">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="font-bold text-slate-800 text-base">Historial de Registros de la Sesión</h3>
+                    <p class="text-xs text-slate-500">Resumen local de los envíos realizados en esta jornada</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="relative w-full sm:w-64">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                        <input type="text" id="searchInput" oninput="filterHistoryTable()" placeholder="BUSCAR POR AGENTE, DISTRITO..." class="uppercase-input w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider">
+                            <th class="p-3">Empresa</th>
+                            <th class="p-3">Fecha y Hora</th>
+                            <th class="p-3">Usuario</th>
+                            <th class="p-3">Telef Móvil</th>
+                            <th class="p-3">Agente</th>
+                            <th class="p-3">Asesor</th>
+                            <th class="p-3">Tipificación 1</th>
+                            <th class="p-3">Tipificación 2</th>
+                            <th class="p-3">Estado Envío</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody" class="divide-y divide-slate-100 text-slate-700">
+                        <tr id="emptyRow">
+                            <td colspan="9" class="p-6 text-center text-slate-400">
+                                No se han realizado registros en esta sesión.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL: AÑADIR NUEVO ASESOR -->
+    <div id="modalNewAdvisor" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-100 p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-5 h-5 text-indigo-600"></i>
+                    <h3 class="font-bold text-slate-800 text-base">Agregar Nuevo Asesor</h3>
+                </div>
+                <button type="button" onclick="closeNewAdvisorModal()" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <p class="text-xs text-slate-500">
+                    Ingrese el nombre completo del nuevo asesor. Se guardará automáticamente en mayúsculas y permanecerá disponible en la lista.
+                </p>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre Completo del Asesor</label>
+                    <input type="text" id="newAdvisorInput" placeholder="EJ: JUAN PEREZ" class="uppercase-input w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none font-bold">
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-2">
+                <button type="button" onclick="closeNewAdvisorModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold rounded-lg">
+                    Cancelar
+                </button>
+                <button type="button" onclick="saveNewAdvisor()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow">
+                    Guardar Asesor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 hidden transform transition-all duration-300 translate-y-10 opacity-0">
+        <div id="toastContent" class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl border text-xs font-bold text-white">
+            <i id="toastIcon" data-lucide="check-circle" class="w-5 h-5"></i>
+            <span id="toastMessage">Operación realizada con éxito</span>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Preconfigured Apps Script Web App Endpoint URL
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxc0ZLkH5AQVrSKWQsWO1d068EPrpblP1AwFRSvYjVUdrDWUpR5griaM_cX1wt_oyU/exec";
+
+        // Initial default advisor list
+        const DEFAULT_ADVISORS = [
+            "ROSA RISCO",
+            "ANGELA ADRIANO",
+            "PATRICIA PEREZ",
+            "CRISTIAN ESPINOZA",
+            "MABEL DUEÑAS",
+            "STEVE GONZALES",
+            "YOSELIN SULCA",
+            "YARIRA DIAZ",
+            "FLOR TORERO",
+            "YEFFERSON VIZA"
+        ];
+
+        // Tipificaciones Mapping (Columna C Concepto4 -> Columna D Cruce)
+        const MAPPING_TIPIFICACIONES = {
+            "VENTA": "Lead Validado",
+            "AGENDADO": "Lead Validado",
+            "CLIENTE NO PERMITE BRINDAR INFORMACIÓN": "Lead No Valido",
+            "NO DESEA-PRECIO": "Lead Validado",
+            "NO DESEA-PRODUCTO": "Lead Validado",
+            "CLIENTE RETENIDO - PRECIO": "Lead Validado",
+            "CLIENTE RETENIDO - VELOCIDAD": "Lead Validado",
+            "CLIENTE RETENIDO - PROMOCIÓN": "Lead Validado",
+            "CONFORME CON SU OPERADOR": "Lead Validado",
+            "CORTA LLAMADA": "Lead Validado",
+            "CLIENTE CON DEUDA": "Lead No Valido",
+            "SIN COBERTURA": "Lead No Valido",
+            "YA CUENTA CON SERVICIO ACTIVO": "Lead No Valido",
+            "PREVENTA EN PROCESO": "Lead Validado",
+            "CLIENTE DE BAJA": "Lead No Valido",
+            "NO CONTESTA": "Lead Validado",
+            "LLAMADA MUDA": "Lead Validado",
+            "CASILLA DE VOZ": "Lead Validado",
+            "FUERA DE SERVICIO": "Lead No Valido"
+        };
+
+        let currentCompany = 'PERUFIBRA';
+        let sessionHistory = [];
+        let currentSystemIsoDate = "";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            startLiveClock();
+            loadAdvisors();
+            setupUppercaseInputs();
+
+            // Bind Form Submit
+            document.getElementById('leadForm').addEventListener('submit', handleFormSubmit);
+        });
+
+        // Convert input text to Uppercase automatically on input events
+        function setupUppercaseInputs() {
+            const inputs = document.querySelectorAll('input[type="text"], textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const start = e.target.selectionStart;
+                    const end = e.target.selectionEnd;
+                    e.target.value = e.target.value.toUpperCase();
+                    e.target.setSelectionRange(start, end);
+                });
+            });
+        }
+
+        // Live Clock for FECHA automatic field
+        function startLiveClock() {
+            function updateClock() {
+                const now = new Date();
+                
+                // Format for Google Sheets (YYYY-MM-DD HH:mm:ss)
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                currentSystemIsoDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                document.getElementById('fechaDisplay').value = currentSystemIsoDate;
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // Load Advisors into Select
+        function loadAdvisors(selectedName = "") {
+            const storedAdvisors = JSON.parse(localStorage.getItem('crm_custom_advisors') || "[]");
+            const allAdvisors = Array.from(new Set([...DEFAULT_ADVISORS, ...storedAdvisors]));
+
+            const select = document.getElementById('asesor');
+            select.innerHTML = `<option value="" disabled ${!selectedName ? 'selected' : ''}>-- SELECCIONE ASESOR --</option>`;
+
+            allAdvisors.forEach(advisor => {
+                const opt = document.createElement('option');
+                opt.value = advisor.toUpperCase();
+                opt.textContent = advisor.toUpperCase();
+                if (selectedName && advisor.toUpperCase() === selectedName.toUpperCase()) {
+                    opt.selected = true;
+                }
+                select.appendChild(opt);
+            });
+        }
+
+        // Open/Close Modal for adding new advisor
+        function openNewAdvisorModal() {
+            document.getElementById('newAdvisorInput').value = '';
+            document.getElementById('modalNewAdvisor').classList.remove('hidden');
+        }
+
+        function closeNewAdvisorModal() {
+            document.getElementById('modalNewAdvisor').classList.add('hidden');
+        }
+
+        function saveNewAdvisor() {
+            const nameInput = document.getElementById('newAdvisorInput').value.trim().toUpperCase();
+            if (!nameInput) {
+                showToast("Ingrese un nombre de asesor válido", "error");
+                return;
+            }
+
+            const storedAdvisors = JSON.parse(localStorage.getItem('crm_custom_advisors') || "[]");
+            if (!storedAdvisors.includes(nameInput)) {
+                storedAdvisors.push(nameInput);
+                localStorage.setItem('crm_custom_advisors', JSON.stringify(storedAdvisors));
+            }
+
+            loadAdvisors(nameInput);
+            closeNewAdvisorModal();
+            showToast(`Asesor '${nameInput}' agregado con éxito`, "success");
+        }
+
+        // Switch Company Tabs
+        function selectCompany(company) {
+            currentCompany = company;
+            document.getElementById('empresa').value = company;
+
+            const tabPF = document.getElementById('tabPF');
+            const tabWIN = document.getElementById('tabWIN');
+            const headerBar = document.getElementById('formHeaderBar');
+            const headerTitle = document.getElementById('companyHeaderTitle');
+            const headerSubtitle = document.getElementById('companyHeaderSubtitle');
+            const headerBadge = document.getElementById('companyHeaderBadge');
+            const headerIcon = document.getElementById('companyHeaderIcon');
+
+            if (company === 'PERUFIBRA') {
+                tabPF.className = "flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 company-tab-active-pf";
+                tabWIN.className = "flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+
+                headerBar.className = "px-6 py-4 bg-gradient-to-r from-indigo-600 to-blue-600 text-white flex items-center justify-between transition-all duration-300";
+                headerTitle.textContent = "Formulario de Registro - PERU FIBRA";
+                headerSubtitle.textContent = "Los datos se guardarán automáticamente en la pestaña 'LEADS BASE PF'";
+                headerBadge.textContent = "LEADS BASE PF";
+                headerIcon.setAttribute('data-lucide', 'wifi');
+            } else {
+                tabWIN.className = "flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 company-tab-active-win";
+                tabPF.className = "flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+
+                headerBar.className = "px-6 py-4 bg-gradient-to-r from-orange-600 to-amber-600 text-white flex items-center justify-between transition-all duration-300";
+                headerTitle.textContent = "Formulario de Registro - WIN";
+                headerSubtitle.textContent = "Los datos se guardarán automáticamente en la pestaña 'LEADS BASE WIN'";
+                headerBadge.textContent = "LEADS BASE WIN";
+                headerIcon.setAttribute('data-lucide', 'zap');
+            }
+            lucide.createIcons();
+        }
+
+        // Auto-fill TIPIFICACIONES 2 based on TIPIFICACIONES 1
+        function handleTipificacionChange() {
+            const val1 = document.getElementById('tipificaciones1').value;
+            const input2 = document.getElementById('tipificaciones2');
+            const badge = document.getElementById('validationBadge');
+
+            const val2 = MAPPING_TIPIFICACIONES[val1] || "";
+            input2.value = val2.toUpperCase();
+
+            if (val2) {
+                badge.classList.remove('hidden');
+                if (val2 === 'Lead Validado') {
+                    badge.textContent = 'VALIDADO';
+                    badge.className = 'absolute right-2.5 top-2 text-[10px] px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-800';
+                } else {
+                    badge.textContent = 'NO VALIDO';
+                    badge.className = 'absolute right-2.5 top-2 text-[10px] px-2 py-0.5 rounded font-bold bg-rose-100 text-rose-800';
+                }
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // GPS Capture
+        function obtenerCoordenadasGPS() {
+            if ("geolocation" in navigator) {
+                showToast("Obteniendo ubicación GPS...", "info");
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const coords = `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`;
+                        document.getElementById('coordenadas').value = coords;
+                        showToast("Coordenadas GPS capturadas con éxito", "success");
+                    },
+                    (error) => {
+                        showToast("Error obteniendo ubicación GPS. Ingrese manualmente.", "error");
+                    }
+                );
+            } else {
+                showToast("Geolocalización no soportada por su navegador.", "error");
+            }
+        }
+
+        // Submit Form
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            const originalBtnText = btnSubmit.innerHTML;
+
+            // UI Loading State
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `
+                <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>GUARDANDO EN GOOGLE SHEET...</span>
+            `;
+
+            // Prepare Payload - Guaranteed Uppercase & Exact Requested Order
+            const payload = {
+                empresa: currentCompany.toUpperCase(),
+                fecha: currentSystemIsoDate,
+                usuario: document.getElementById('usuario').value.trim().toUpperCase(),
+                telefMovil: document.getElementById('telefMovil').value.trim().toUpperCase(),
+                agente: document.getElementById('agente').value.trim().toUpperCase(),
+                tipificaciones1: document.getElementById('tipificaciones1').value.trim().toUpperCase(),
+                tipificaciones2: document.getElementById('tipificaciones2').value.trim().toUpperCase(),
+                fuente: document.getElementById('fuente').value.trim().toUpperCase(),
+                observacion: document.getElementById('observacion').value.trim().toUpperCase(),
+                distrito: document.getElementById('distrito').value.trim().toUpperCase(),
+                direccion: document.getElementById('direccion').value.trim().toUpperCase(),
+                coordenadas: document.getElementById('coordenadas').value.trim().toUpperCase(),
+                primeraLlamada: document.getElementById('primeraLlamada').value.trim().toUpperCase(),
+                segundaLlamada: document.getElementById('segundaLlamada').value.trim().toUpperCase(),
+                terceraLlamada: document.getElementById('terceraLlamada').value.trim().toUpperCase(),
+                segundaValidacion: document.getElementById('segundaValidacion').value.trim().toUpperCase(),
+                asesor: document.getElementById('asesor').value.trim().toUpperCase()
+            };
+
+            try {
+                // Send via no-cors mode to Apps Script
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+
+                showToast(`¡Registro enviado a la hoja de ${payload.empresa}!`, "success");
+                addRecordToLocalHistory(payload, 'GUARDADO');
+                resetForm();
+
+            } catch (err) {
+                console.error("Error al enviar registro:", err);
+                showToast("Ocurrió un inconveniente de red. Intente de nuevo.", "error");
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = originalBtnText;
+            }
+        }
+
+        // Add Record to Local Session History Table
+        function addRecordToLocalHistory(data, status) {
+            sessionHistory.unshift({ ...data, status });
+            renderHistoryTable();
+        }
+
+        // Render History Table
+        function renderHistoryTable(filteredData = null) {
+            const tableBody = document.getElementById('historyTableBody');
+            const items = filteredData || sessionHistory;
+
+            if (items.length === 0) {
+                tableBody.innerHTML = `
+                    <tr id="emptyRow">
+                        <td colspan="9" class="p-6 text-center text-slate-400">
+                            No se han realizado registros en esta sesión.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tableBody.innerHTML = items.map(item => `
+                <tr class="hover:bg-slate-50/80 transition uppercase">
+                    <td class="p-3 font-semibold">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold ${item.empresa === 'PERUFIBRA' ? 'bg-indigo-100 text-indigo-800' : 'bg-orange-100 text-orange-800'}">
+                            ${item.empresa}
+                        </span>
+                    </td>
+                    <td class="p-3 font-mono text-slate-600">${item.fecha}</td>
+                    <td class="p-3">${item.usuario}</td>
+                    <td class="p-3 font-mono font-bold text-slate-800">${item.telefMovil}</td>
+                    <td class="p-3 font-medium text-slate-900">${item.agente}</td>
+                    <td class="p-3 font-bold text-slate-700">${item.asesor}</td>
+                    <td class="p-3 text-slate-600">${item.tipificaciones1}</td>
+                    <td class="p-3 font-bold">
+                        <span class="${item.tipificaciones2.includes('VALIDADO') ? 'text-emerald-600' : 'text-rose-600'}">
+                            ${item.tipificaciones2}
+                        </span>
+                    </td>
+                    <td class="p-3">
+                        <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            ${item.status}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Filter Session History
+        function filterHistoryTable() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = sessionHistory.filter(item => 
+                item.agente.toLowerCase().includes(query) ||
+                item.usuario.toLowerCase().includes(query) ||
+                (item.telefMovil && item.telefMovil.toLowerCase().includes(query)) ||
+                item.asesor.toLowerCase().includes(query) ||
+                item.tipificaciones1.toLowerCase().includes(query) ||
+                item.distrito.toLowerCase().includes(query) ||
+                item.empresa.toLowerCase().includes(query)
+            );
+            renderHistoryTable(filtered);
+        }
+
+        // Reset Form Fields
+        function resetForm() {
+            document.getElementById('leadForm').reset();
+            document.getElementById('empresa').value = currentCompany;
+            document.getElementById('validationBadge').classList.add('hidden');
+        }
+
+        // Toast System
+        function showToast(message, type = "success") {
+            const toast = document.getElementById('toast');
+            const toastContent = document.getElementById('toastContent');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMessage.textContent = message;
+
+            if (type === "success") {
+                toastContent.className = "flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl border text-xs font-bold text-white bg-emerald-600 border-emerald-500";
+                toastIcon.setAttribute('data-lucide', 'check-circle');
+            } else if (type === "error") {
+                toastContent.className = "flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl border text-xs font-bold text-white bg-rose-600 border-rose-500";
+                toastIcon.setAttribute('data-lucide', 'alert-circle');
+            } else {
+                toastContent.className = "flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl border text-xs font-bold text-white bg-indigo-600 border-indigo-500";
+                toastIcon.setAttribute('data-lucide', 'info');
+            }
+
+            lucide.createIcons();
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 300);
+            }, 3500);
+        }
+    </script>
+</body>
+</html>
