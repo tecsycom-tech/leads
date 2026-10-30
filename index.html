@@ -690,7 +690,6 @@
             startLiveClock();
             loadAdvisors();
             setupUppercaseInputs();
-            initReportMonthFilter();
 
             document.getElementById('leadForm').addEventListener('submit', handleFormSubmit);
         });
@@ -1014,12 +1013,14 @@
                 btnPF.className = "px-4 py-2 rounded-lg font-bold text-xs text-slate-600 transition hover:text-slate-900";
             }
 
+            updateMonthFilterOptions();
             renderAnalyticsDashboard();
         }
 
         function formatMonthYear(dateString) {
             if (!dateString) return "Desconocido";
-            const parts = dateString.split(' ')[0].split('T')[0].split('-');
+            const datePart = dateString.split(' ')[0].split('T')[0];
+            const parts = datePart.split('-');
             if (parts.length < 2) return "Desconocido";
 
             const year = parts[0];
@@ -1033,14 +1034,49 @@
             return `${monthNames[monthIdx] || 'Mes'} ${year}`;
         }
 
-        function initReportMonthFilter() {
+        // CARGA DINÁMICA DE MESES SEGÚN LOS DATOS REALES DE LA HOJA
+        function updateMonthFilterOptions() {
+            const rawList = fullSheetRawData[currentReportSheet] || [];
+            const monthSet = new Set();
+
+            rawList.forEach(row => {
+                if (row.FECHA) {
+                    const formattedMonth = formatMonthYear(row.FECHA);
+                    if (formattedMonth !== "Desconocido") {
+                        monthSet.add(formattedMonth);
+                    }
+                }
+            });
+
+            // Ordenar meses cronológicamente si es posible
+            const monthNamesOrder = [
+                "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+            ];
+
+            const sortedMonths = Array.from(monthSet).sort((a, b) => {
+                const [m1, y1] = a.split(' ');
+                const [m2, y2] = b.split(' ');
+                if (y1 !== y2) return y2 - y1; // Año más reciente primero
+                return monthNamesOrder.indexOf(m2) - monthNamesOrder.indexOf(m1);
+            });
+
             const monthSelect = document.getElementById('monthFilter');
-            monthSelect.innerHTML = `
-                <option value="ALL" selected>Todos los Meses</option>
-                <option value="Octubre 2026">Octubre 2026</option>
-                <option value="Septiembre 2026">Septiembre 2026</option>
-                <option value="Agosto 2026">Agosto 2026</option>
-            `;
+            const currentValue = monthSelect.value;
+
+            let htmlOptions = `<option value="ALL">Todos los Meses</option>`;
+            sortedMonths.forEach(m => {
+                htmlOptions += `<option value="${m}">${m}</option>`;
+            });
+
+            monthSelect.innerHTML = htmlOptions;
+
+            // Mantener selección anterior si sigue disponible, sino elegir 'ALL' o el primero
+            if (sortedMonths.includes(currentValue)) {
+                monthSelect.value = currentValue;
+            } else {
+                monthSelect.value = sortedMonths.length > 0 ? sortedMonths[0] : "ALL";
+            }
         }
 
         // Conexión en vivo con Google Sheets (doGet action=getData)
@@ -1053,6 +1089,7 @@
                     if (data && (data.PERUFIBRA || data.WIN)) {
                         fullSheetRawData = data;
                         showToast("¡Datos sincronizados correctamente desde Google Sheet!", "success");
+                        updateMonthFilterOptions();
                         renderAnalyticsDashboard();
                         return;
                     }
@@ -1061,6 +1098,7 @@
                 console.log("No se pudo conectar a Google Sheets, usando respaldo local.", e);
             }
             showToast("Reporte actualizado.", "success");
+            updateMonthFilterOptions();
             renderAnalyticsDashboard();
         }
 
@@ -1112,7 +1150,7 @@
                     const parts = datePart.split('-');
                     if (parts.length === 3) {
                         const [year, month, day] = parts;
-                        const ddMMyyyy = `${day}/${month}/${year}`; // Formato dd/mm/yyyy exacto
+                        const ddMMyyyy = `${day}/${month}/${year}`;
                         dateCounts[ddMMyyyy] = (dateCounts[ddMMyyyy] || 0) + 1;
                     }
                 }
