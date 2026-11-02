@@ -564,6 +564,25 @@
                     </div>
                 </div>
 
+                <!-- Gráfico 5: Top Distritos (MOVIDO ANTES DE ASESORES Y FUENTE) -->
+                <div class="lg:col-span-3 bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm" id="titleChartDistritos">Top Distritos con Mayor Interés</h3>
+                            <p class="text-[11px] text-slate-400" id="subtitleChartDistritos">Ubicación geográfica de los prospectos solicitados</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="btnResetDistritos" onclick="resetDistrictFilter()" class="hidden text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-2.5 py-1 rounded-lg transition">
+                                Ver Todos los Distritos
+                            </button>
+                            <span class="text-xs bg-slate-100 text-slate-600 font-bold px-2 py-1 rounded">Cobertura</span>
+                        </div>
+                    </div>
+                    <div class="h-56 relative">
+                        <canvas id="chartDistritos"></canvas>
+                    </div>
+                </div>
+
                 <!-- Gráfico 3: Rendimiento por Asesor -->
                 <div class="lg:col-span-2 bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
                     <div class="flex items-center justify-between mb-4">
@@ -589,25 +608,6 @@
                     </div>
                     <div class="h-72 relative flex items-center justify-center">
                         <canvas id="chartFuente"></canvas>
-                    </div>
-                </div>
-
-                <!-- Gráfico 5: Top Distritos -->
-                <div class="lg:col-span-3 bg-white rounded-2xl p-5 shadow-sm border border-slate-100">
-                    <div class="flex items-center justify-between mb-4">
-                        <div>
-                            <h3 class="font-bold text-slate-800 text-sm" id="titleChartDistritos">Top Distritos con Mayor Interés</h3>
-                            <p class="text-[11px] text-slate-400" id="subtitleChartDistritos">Ubicación geográfica de los prospectos solicitados</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button type="button" id="btnResetDistritos" onclick="resetDistrictFilter()" class="hidden text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold px-2.5 py-1 rounded-lg transition">
-                                Ver Todos los Distritos
-                            </button>
-                            <span class="text-xs bg-slate-100 text-slate-600 font-bold px-2 py-1 rounded">Cobertura</span>
-                        </div>
-                    </div>
-                    <div class="h-56 relative">
-                        <canvas id="chartDistritos"></canvas>
                     </div>
                 </div>
 
